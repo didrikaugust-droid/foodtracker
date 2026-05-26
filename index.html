@@ -1,26 +1,71 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Food App</title>
+<title>Food Pro</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <div class="bg"></div>
 
-<nav>
-  <a href="index.html">Home</a>
-  <a href="logg.html">Logg</a>
-  <a href="stats.html">Stats</a>
-</nav>
+<div class="app">
 
-<div class="container">
-  <h1>Dashboard</h1>
+  <div class="sidebar">
+    <div class="logo">🍔 Food Pro</div>
 
-  <div class="card">
-    Premium Food Tracker 🍔
+    <div class="nav">
+      <button onclick="go('home')">Home</button>
+      <button onclick="go('log')">Log</button>
+      <button onclick="go('stats')">Stats</button>
+    </div>
   </div>
+
+  <div class="main">
+
+    <!-- HOME -->
+    <div id="home" class="page active">
+      <h1>Luxury Food Tracker</h1>
+      <div class="card">Framer-style UI + kamera + bilder</div>
+    </div>
+
+    <!-- LOG -->
+    <div id="log" class="page">
+
+      <h1>Log food</h1>
+
+      <div class="card">
+        <input id="food" placeholder="Mat">
+        <input id="cal" placeholder="Kalorier">
+        <input type="file" id="file" accept="image/*">
+
+        <button class="primary" onclick="openCamera()">📸 Kamera</button>
+
+        <video id="video" autoplay style="width:100%;border-radius:12px;display:none;"></video>
+        <canvas id="canvas" style="display:none;"></canvas>
+
+        <button class="primary" onclick="addFood()">Legg til</button>
+      </div>
+
+      <div class="card" id="list"></div>
+
+    </div>
+
+    <!-- STATS -->
+    <div id="stats" class="page">
+
+      <h1>Stats</h1>
+
+      <div class="card">
+        Totale kalorier:
+        <h2 id="total">0</h2>
+      </div>
+
+    </div>
+
+  </div>
+
 </div>
 
+<script src="app.js"></script>
 </body>
 </html>
