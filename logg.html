@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Logg</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="bg"></div>
+
+<nav>
+  <a href="index.html">Home</a>
+  <a href="logg.html">Logg</a>
+  <a href="stats.html">Stats</a>
+</nav>
+
+<div class="container">
+
+  <h1>Matlogg</h1>
+
+  <div class="card">
+    <input id="food" placeholder="Mat">
+    <input id="cal" placeholder="Kalorier">
+    <input type="file" id="image" accept="image/*">
+
+    <button onclick="addFood()">Legg til</button>
+  </div>
+
+  <div id="list"></div>
+
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
