@@ -1,66 +1,75 @@
 let foods = JSON.parse(localStorage.getItem("foods") || "[]");
 
-function save() {
-  localStorage.setItem("foods", JSON.stringify(foods));
+let cameraStream = null;
+let lastImage = "";
+
+function go(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(page).classList.add('active');
 }
 
+/* CAMERA */
+async function openCamera() {
+  const video = document.getElementById("video");
+  video.style.display = "block";
+
+  cameraStream = await navigator.mediaDevices.getUserMedia({ video: true });
+  video.srcObject = cameraStream;
+
+  setTimeout(() => {
+    const canvas = document.getElementById("canvas");
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+
+    canvas.getContext("2d").drawImage(video, 0, 0);
+
+    lastImage = canvas.toDataURL("image/png");
+
+    cameraStream.getTracks().forEach(t => t.stop());
+    video.style.display = "none";
+  }, 2000);
+}
+
+/* ADD FOOD */
 function addFood() {
   let food = document.getElementById("food").value;
   let cal = document.getElementById("cal").value;
-  let img = document.getElementById("image");
+  let file = document.getElementById("file");
 
-  let imageURL = "";
+  let image = lastImage;
 
-  if (img && img.files[0]) {
-    imageURL = URL.createObjectURL(img.files[0]);
+  if (!image && file.files[0]) {
+    image = URL.createObjectURL(file.files[0]);
   }
 
-  foods.push({ food, cal, image: imageURL });
-  save();
+  foods.push({ food, cal, image });
+  localStorage.setItem("foods", JSON.stringify(foods));
 
-  window.location.reload();
+  render();
 }
 
-function renderList() {
+/* RENDER */
+function render() {
   let list = document.getElementById("list");
   if (!list) return;
 
   list.innerHTML = "";
 
-  foods.forEach((f, i) => {
+  let total = 0;
+
+  foods.forEach(f => {
+    total += Number(f.cal);
+
     list.innerHTML += `
-      <div class="card">
-        <a href="detail.html?id=${i}" style="color:white;text-decoration:none;">
-          ${f.image ? `<img src="${f.image}">` : ""}
-          <div style="margin-top:10px;">${f.food} - ${f.cal} kcal</div>
-        </a>
+      <div class="item">
+        ${f.image ? `<img src="${f.image}">` : ""}
+        <div>${f.food} - ${f.cal} kcal</div>
       </div>
     `;
   });
+
+  let t = document.getElementById("total");
+  if (t) t.innerText = total;
 }
 
-function renderStats() {
-  let total = foods.reduce((sum, f) => sum + Number(f.cal), 0);
-  let el = document.getElementById("stats");
-  if (el) el.innerHTML = "Totale kalorier: " + total;
-}
-
-function loadDetail() {
-  let params = new URLSearchParams(window.location.search);
-  let id = params.get("id");
-
-  let f = foods[id];
-  if (!f) return;
-
-  document.getElementById("detail").innerHTML = `
-    ${f.image ? `<img src="${f.image}">` : ""}
-    <h2>${f.food}</h2>
-    <p>${f.cal} kcal</p>
-  `;
-}
-
-window.onload = () => {
-  renderList();
-  renderStats();
-  loadDetail();
-};
+window.onload = render;
